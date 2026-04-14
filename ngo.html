@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>NGO Dashboard</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+<div class="layout">
+
+<!-- SIDEBAR -->
+<div class="sidebar green">
+<h2>NGO</h2>
+<ul>
+<li>Dashboard</li>
+<li>Donations</li>
+<li>Volunteers</li>
+<li>Reports</li>
+<li>Messages</li>
+</ul>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<h2>NGO Dashboard</h2>
+
+<!-- TOP CARDS -->
+<div class="cards">
+
+<div class="card">
+Active Donations<br>
+<b id="donations">0</b>
+</div>
+
+<div class="card">
+Food Items<br>
+<b id="foodCount">0</b>
+</div>
+
+<div class="card">
+People Served<br>
+<b id="served">0</b>
+</div>
+
+<div class="card highlight">
+Total Quantity<br>
+<b id="totalQty">0</b>
+</div>
+
+</div>
+
+<!-- FOOD -->
+<div class="section">
+<h3>Incoming Food</h3>
+<div class="section">
+<h3>Donation Stats</h3>
+<canvas id="ngoChart"></canvas>
+</div>
+<div id="ngoList"></div>
+<button onclick="acceptFood()">Accept Food</button>
+</div>
+
+</div>
+
+</div>
+<script defer src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>NutriCycle AI</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+
+<body>
+
+<h1 class="title">NutriCycle AI</h1>
+<p class="sub">Smart Food Redistribution System</p>
+
+<div id="roleSelection">
+<button onclick="selectRole('user')">User</button>
+<button onclick="selectRole('ngo')">NGO</button>
+<button onclick="selectRole('delivery')">Delivery</button>
+</div>
+
+<div id="registrationForm" style="display:none;">
+<h3 id="formTitle"></h3>
+
+<div id="userFields">
+<input id="name" placeholder="Name">
+<input id="phone" placeholder="10-digit phone">
+<input id="age" placeholder="Age">
+</div>
+
+<button onclick="submitDetails()">Continue</button>
+</div>
+
+<div id="mainApp" style="display:none;">
+
+<h2 id="welcomeText"></h2>
+
+<div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:20px;">
+
+<input id="foodName" placeholder="Food Name">
+<input id="location" placeholder="Enter Location">
+<input id="quantity" type="number" min="1" placeholder="Quantity">
+
+<select id="unit">
+<option>kg</option>
+<option>g</option>
+<option>pieces</option>
+<option>plates</option>
+<option>L</option>
+<option>mL</option>
+</select>
+<button onclick="startCamera()">Start Camera</button>
+<button onclick="stopCamera()">Stop Camera</button>
+
+</div>
+
+<video id="video" autoplay playsinline style="width:320px;display:block;margin:15px auto;border-radius:10px;"></video>
+<img id="preview">
+
+<p id="status"></p>
+
+<div style="margin-top:15px;">
+<button onclick="addFood()">Add Food</button>
+<button onclick="goToNGO()">Send to NGO</button>
+<button onclick="findDelivery()">Find Delivery</button>
+</div>
+
+<div id="foodList"></div>
+<div id="deliveryResult" style="margin-top:10px;font-weight:bold;"></div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

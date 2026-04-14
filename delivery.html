@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Delivery Panel</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+</head>
+
+<body>
+
+<div class="layout">
+
+<!-- SIDEBAR -->
+<div class="sidebar blue">
+<h2>Delivery</h2>
+<ul>
+<li>Home</li>
+<li>My Deliveries</li>
+<li>Earnings</li>
+<li>Map</li>
+</ul>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<h2>Delivery Dashboard</h2>
+
+<!-- CARDS -->
+<div class="cards">
+<div class="card">Today's Deliveries<br><b id="today">1</b></div>
+<div class="card">Earnings<br><b>₹<span id="earn">120</span></b></div>
+<div class="card">Pending<br><b>2</b></div>
+<div class="card highlight">Rating<br><b>4.8 ⭐</b></div>
+</div>
+
+<!-- DELIVERY -->
+<div class="section">
+<h3>Current Delivery</h3>
+<div id="deliveryData"></div>
+<button onclick="startDelivery()">Start</button>
+<button onclick="completeDelivery()">Complete</button>
+</div>
+
+<!-- MAP -->
+<div class="section">
+<h3>Live Map</h3>
+<div id="map" class="map"></div>
+</div>
+
+</div>
+
+</div>
+<script defer src="script.js"></script>
+</body>
+</html>
