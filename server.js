@@ -8,7 +8,7 @@ app.use(cors());
 app.use(express.json({limit:"10mb"}));
 
 const openai = new OpenAI({
-apiKey: "YOUR_API_KEY"
+  apiKey: process.env.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
 });
 
 app.post("/scan", async (req,res)=>{
