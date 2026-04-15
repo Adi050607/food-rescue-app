@@ -10,7 +10,7 @@ app.use(express.json({limit:"10mb"}));
 const OpenAI = require("openai");
 
 const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
+  apiKey: process.env.openai_api_key
 });
 
 app.post("/scan", async (req,res)=>{
