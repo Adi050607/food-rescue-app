@@ -114,16 +114,29 @@ getEl("status").innerText="🧠 Processing result...";
 // ===== LENIENT MODE (TEMP) =====
 
 // simulate AI delay
-await new Promise(r=>setTimeout(r,800));
+try {
 
-// Always accept (for testing)
-let fakeName = "Detected Food";
-let fakeShelf = Math.floor(Math.random()*3)+1;
+    getEl("status").innerText = "🧠 Sending to AI...";
 
-getEl("status").innerText =
-"✅ " + fakeName + " | Shelf life: " + fakeShelf + " days";
+    const response = await fetch("https://food-rescue-app-4jnl.onrender.com/scan", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ image: img })
+    });
 
-isFoodApproved = true;
+    const data = await response.json();
+
+    getEl("status").innerText =
+        "✅ " + data.name + " | Shelf life: " + data.shelfLife + " days";
+
+    isFoodApproved = true;
+
+} catch (e) {
+    getEl("status").innerText = "❌ AI error";
+    isFoodApproved = false;
+}
 
 
 

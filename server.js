@@ -21,17 +21,31 @@ app.post("/scan", async (req, res) => {
         {
           role: "user",
           content: [
-            { type: "text", text: "Is this food? Return JSON {valid,name,shelfLife}" },
+            { type: "text", text: "Identify the food in the image and return ONLY JSON like {\"name\":\"Food\",\"shelfLife\":2}. No extra text." },
             { type: "image_url", image_url: { url: image } }
           ]
         }
       ]
     });
 
-    let text = response.choices[0].message.content;
-    let json = text.slice(text.indexOf("{"), text.lastIndexOf("}") + 1);
+    const text = response.choices[0].message.content;
 
-    res.json(JSON.parse(json));
+let result;
+
+try {
+  result = JSON.parse(text);
+} catch (e) {
+  return res.json({
+    name: "Unknown",
+    shelfLife: 1
+  });
+}
+
+// Ensure fields exist
+res.json({
+  name: result.name || "Unknown",
+  shelfLife: result.shelfLife || 1
+});
 
   } catch (e) {
     res.json({ valid: false });
