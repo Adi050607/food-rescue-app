@@ -68,7 +68,6 @@ let video = getEl("video");
 video.srcObject = videoStream;
 video.style.display="block";
 
-setTimeout(()=>{captureImage();},2000);
 
 }catch(e){
 alert("Camera access failed");

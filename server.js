@@ -21,7 +21,24 @@ app.post("/scan", async (req, res) => {
         {
           role: "user",
           content: [
-            { type: "text", text: "Identify the food in the image and return ONLY JSON like {\"name\":\"Food\",\"shelfLife\":2}. No extra text." },
+            {
+  type: "text",
+  text: `
+Analyze the image carefully.
+
+- Detect ONLY edible food items present anywhere in the image.
+- Ignore humans, faces, hands, background objects.
+- Even if food is partially visible, still detect it.
+- If NO food is present → return valid:false
+
+Return STRICT JSON ONLY:
+{
+  "valid": true/false,
+  "name": "food name",
+  "shelfLife": number_of_days
+}
+`
+}
             { type: "image_url", image_url: { url: image } }
           ]
         }
