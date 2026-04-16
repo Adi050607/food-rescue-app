@@ -104,26 +104,13 @@ getEl("status").innerText="🔍 Scanning...";
 
 try{
 
-const response = async function scanFood(image) {
-  try {
-    const response = await fetch("/scan", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ image })
-    });
-
-    const data = await response.json();
-    console.log(data);
-
-    document.getElementById("result").innerText =
-      "Food: " + data.name + " | Shelf Life: " + data.shelfLife + " days";
-
-  } catch (error) {
-    console.error(error);
-  }
-}
+const response = await fetch("/scan", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({ image: img })
+});
 
 const data = await response.json();
 
