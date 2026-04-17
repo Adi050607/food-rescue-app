@@ -452,8 +452,13 @@ loader.load("https://threejs.org/examples/fonts/helvetiker_regular.typeface.json
 // TEXT
 const geometry = new THREE.TextGeometry("ECOEATS AI", {
 font: font,
-size: 0.6,
-height: 0.15
+size: 0.75,
+height: 0.18,
+curveSegments: 12,
+bevelEnabled: true,
+bevelThickness: 0.02,
+bevelSize: 0.01,
+bevelSegments: 5
 });
 
 const material = new THREE.MeshStandardMaterial({ color: 0x2e7d32 });
@@ -462,7 +467,7 @@ const textMesh = new THREE.Mesh(geometry, material);
 // center text
 geometry.computeBoundingBox();
 const xMid = -0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x);
-textMesh.position.x = xMid;
+textMesh.position.x = xMid - 0.3;
 
 scene.add(textMesh);
 
@@ -474,9 +479,39 @@ emissive: 0x2196f3,
 emissiveIntensity: 0.6
 });
 const apple = new THREE.Mesh(appleGeo, appleMat);
+// TRAIL
+const trailGeo = new THREE.SphereGeometry(0.05, 16, 16);
+const trailMat = new THREE.MeshBasicMaterial({
+color: 0x2196f3,
+transparent: true,
+opacity: 0.5
+});
+
+let trails = [];
 
 scene.add(apple);
+// EYES
+const eyeGeo = new THREE.SphereGeometry(0.03, 16, 16);
+const eyeMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
 
+const eye1 = new THREE.Mesh(eyeGeo, eyeMat);
+const eye2 = new THREE.Mesh(eyeGeo, eyeMat);
+
+eye1.position.set(-0.08, 0.05, 0.28);
+eye2.position.set(0.08, 0.05, 0.28);
+
+apple.add(eye1);
+apple.add(eye2);
+
+// MOUTH
+const mouthGeo = new THREE.TorusGeometry(0.08, 0.015, 16, 100, Math.PI);
+const mouthMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
+
+const mouth = new THREE.Mesh(mouthGeo, mouthMat);
+mouth.position.set(0, -0.05, 0.28);
+mouth.rotation.x = Math.PI;
+
+apple.add(mouth);
 // LEAF
 const leafGeo = new THREE.ConeGeometry(0.07, 0.2, 8);
 const leafMat = new THREE.MeshStandardMaterial({ color: 0x00aa00 });
@@ -492,17 +527,32 @@ requestAnimationFrame(animate);
 
 // elliptical motion
 t += 0.02;
+// BLINK
+const blink = Math.abs(Math.sin(t * 2));
+eye1.scale.y = blink < 0.1 ? 0.1 : 1;
+eye2.scale.y = blink < 0.1 ? 0.1 : 1;
 
 // ellipse around FIRST LETTER "E"
 const a = 0.6;   // tighter → first E
 const b = 0.4;
 
 // shift LEFT so it orbits FIRST "E"
-const offsetX = -1.2;
+const offsetX = -1.8;
 
 apple.position.x = offsetX + a * Math.cos(t);
 apple.position.y = b * Math.sin(t);
+apple.position.y += 0.02 * Math.sin(t * 3);
+// CREATE TRAIL PARTICLES
+const trail = new THREE.Mesh(trailGeo, trailMat.clone());
+trail.position.copy(apple.position);
+scene.add(trail);
+trails.push(trail);
 
+// LIMIT TRAIL LENGTH
+if(trails.length > 20){
+scene.remove(trails[0]);
+trails.shift();
+}
 // slight rotation
 apple.rotation.y += 0.05;
 
