@@ -109,16 +109,31 @@ const response = await fetch("https://food-rescue-app-4jnl.onrender.com/scan", {
   headers: {
     "Content-Type": "application/json"
   },
-  body: JSON.stringify({ image: img })
+  body: JSON.stringify({
+  image: img,
+  foodName: getEl("foodName").value
+})
 });
 
 const data = await response.json();
 
-if(data.valid === false){
-getEl("status").innerText="❌ Not valid food";
+if(!data.valid){
+getEl("status").innerText="❌ No food detected";
 isFoodApproved=false;
 return;
 }
+
+if(!data.matches){
+getEl("status").innerText =
+"⚠️ Mismatch!\nDetected: " + data.detectedName;
+isFoodApproved=false;
+return;
+}
+
+getEl("status").innerText =
+"✅ " + data.detectedName;
+
+isFoodApproved=true;
 
 getEl("status").innerText =
 "✅ " + data.name + " | Shelf life: " + data.shelfLife + " days";
@@ -303,3 +318,78 @@ if(step>20) step=0;
 
 }
 });
+async function openNGOPopup(){
+
+if(!isFoodApproved){
+alert("Scan valid food first");
+return;
+}
+
+let location = getEl("location").value;
+
+if(!location){
+alert("Enter location first");
+return;
+}
+
+getEl("deliveryResult").innerText = "🔍 Searching NGOs...";
+
+// GET COORDINATES
+let coords = await getCoordinates(location);
+
+if(!coords){
+alert("Invalid location");
+return;
+}
+
+// FETCH REAL NGOs
+let res = await fetch(
+`https://nominatim.openstreetmap.org/search?format=json&q=ngo near ${location}`
+);
+
+let data = await res.json();
+
+if(data.length === 0){
+getEl("deliveryResult").innerText = "No NGOs found nearby";
+return;
+}
+
+// SHOW RESULTS
+let list = data.slice(0,5).map((ngo,i)=>{
+return `${i+1}. ${ngo.display_name}`;
+}).join("\n\n");
+
+getEl("deliveryResult").innerText =
+"Nearby NGOs:\n\n" + list + "\n\nAuto-selecting nearest...";
+
+// AUTO SELECT NEAREST
+let selectedNGO = data[0].display_name;
+
+assignDelivery(selectedNGO);
+}
+function assignDelivery(ngo){
+
+let foods = JSON.parse(localStorage.getItem("foods"));
+
+if(!foods){
+alert("No food data");
+return;
+}
+
+// attach NGO
+foods[foods.length - 1].ngo = ngo;
+
+localStorage.setItem("ngoData", JSON.stringify(foods));
+
+// delivery assignment
+let agent = "Agent-" + Math.floor(Math.random()*100);
+
+localStorage.setItem("delivery", JSON.stringify({
+ngo: ngo,
+agent: agent
+}));
+
+getEl("deliveryResult").innerText =
+"✅ Assigned to:\n" + ngo +
+"\n\n🚚 Delivery: " + agent;
+}
