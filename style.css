@@ -160,3 +160,13 @@ text-align:center;
 #ngoList{
 white-space:pre-line;
 }
+@keyframes float{
+0%{transform:translateY(0);}
+50%{transform:translateY(-8px);}
+100%{transform:translateY(0);}
+}
+
+#chatIcon{
+animation:float 2s infinite ease-in-out;
+box-shadow:0 0 20px #2196f3;
+}

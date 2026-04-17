@@ -393,3 +393,33 @@ getEl("deliveryResult").innerText =
 "✅ Assigned to:\n" + ngo +
 "\n\n🚚 Delivery: " + agent;
 }
+function toggleChat(){
+let box = document.getElementById("chatBox");
+box.style.display = box.style.display === "none" ? "block" : "none";
+}
+
+async function sendMessage(){
+
+let input = getEl("chatInput");
+let msg = input.value;
+
+if(!msg) return;
+
+let chat = getEl("chatMessages");
+
+chat.innerHTML += `<p><b>You:</b> ${msg}</p>`;
+
+input.value = "";
+
+let res = await fetch("https://food-rescue-app-4jnl.onrender.com/chat",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({message:msg})
+});
+
+let data = await res.json();
+
+chat.innerHTML += `<p><b>AI:</b> ${data.reply}</p>`;
+
+chat.scrollTop = chat.scrollHeight;
+}

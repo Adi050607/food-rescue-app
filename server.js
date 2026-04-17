@@ -51,6 +51,37 @@ Return JSON:
         }
       ]
     });
+    app.post("/chat", async (req, res) => {
+  try {
+    const { message } = req.body;
+
+    const response = await client.responses.create({
+      model: "gpt-4.1-mini",
+      input: [
+        {
+          role: "user",
+          content: [
+            {
+              type: "input_text",
+              text: `
+You are EcoEase AI.
+Help with food donation, NGOs, delivery.
+
+User: ${message}
+`
+            }
+          ]
+        }
+      ]
+    });
+
+    const reply = response.output[0].content[0].text;
+    res.json({ reply });
+
+  } catch (e) {
+    res.json({ reply: "AI not available" });
+  }
+});
 
     const text = response.output[0].content[0].text;
 
