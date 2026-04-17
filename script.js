@@ -188,6 +188,15 @@ let foodData = {name,qty,unit,location};
 
 let foods = JSON.parse(localStorage.getItem("foods")) || [];
 foods.push(foodData);
+let food = {
+name: getEl("foodName").value,
+quantity: getEl("quantity").value,
+unit: getEl("unit").value,
+location: getEl("location").value,
+date: getEl("date").value,
+time: getEl("time").value
+};
+foods.push(food);
 localStorage.setItem("foods", JSON.stringify(foods));
 }
 
@@ -369,29 +378,33 @@ assignDelivery(selectedNGO);
 }
 function assignDelivery(ngo){
 
-let foods = JSON.parse(localStorage.getItem("foods"));
-
-if(!foods){
-alert("No food data");
-return;
-}
-
-// attach NGO
-foods[foods.length - 1].ngo = ngo;
-
-localStorage.setItem("ngoData", JSON.stringify(foods));
-
-// delivery assignment
 let agent = "Agent-" + Math.floor(Math.random()*100);
 
-localStorage.setItem("delivery", JSON.stringify({
-ngo: ngo,
-agent: agent
-}));
+let delivery = {
+ngo,
+agent,
+status:"Pickup Assigned",
+time:new Date().toLocaleString()
+};
+
+localStorage.setItem("delivery", JSON.stringify(delivery));
 
 getEl("deliveryResult").innerText =
-"✅ Assigned to:\n" + ngo +
-"\n\n🚚 Delivery: " + agent;
+"🚚 Delivery Started\nNGO: " + ngo +
+"\nAgent: " + agent +
+"\nTime: " + delivery.time;
+
+// simulate progress
+setTimeout(()=>{
+delivery.status = "Picked Up";
+getEl("deliveryResult").innerText += "\n📦 Picked Up";
+},3000);
+
+setTimeout(()=>{
+delivery.status = "Delivered";
+getEl("deliveryResult").innerText += "\n✅ Delivered";
+},6000);
+
 }
 
 
@@ -472,7 +485,7 @@ textMesh.position.x = xMid - 0.3;
 scene.add(textMesh);
 
 // APPLE (SPHERE)
-const appleGeo = new THREE.SphereGeometry(0.3, 32, 32);
+const appleGeo = new THREE.SphereGeometry(0.45, 32, 32);
 const appleMat = new THREE.MeshStandardMaterial({
 color: 0xff3333,
 emissive: 0x2196f3,
@@ -484,14 +497,14 @@ const trailGeo = new THREE.SphereGeometry(0.05, 16, 16);
 const trailMat = new THREE.MeshBasicMaterial({
 color: 0x2196f3,
 transparent: true,
-opacity: 0.5
+opacity: 0.8
 });
 
 let trails = [];
 
 scene.add(apple);
 // EYES
-const eyeGeo = new THREE.SphereGeometry(0.03, 16, 16);
+const eyeGeo = new THREE.SphereGeometry(0.17, 16, 16);
 const eyeMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
 
 const eye1 = new THREE.Mesh(eyeGeo, eyeMat);
@@ -504,7 +517,7 @@ apple.add(eye1);
 apple.add(eye2);
 
 // MOUTH
-const mouthGeo = new THREE.TorusGeometry(0.08, 0.015, 16, 100, Math.PI);
+const mouthGeo = new THREE.TorusGeometry(0.19, 0.097, 16, 100, Math.PI);
 const mouthMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
 
 const mouth = new THREE.Mesh(mouthGeo, mouthMat);
@@ -513,7 +526,7 @@ mouth.rotation.x = Math.PI;
 
 apple.add(mouth);
 // LEAF
-const leafGeo = new THREE.ConeGeometry(0.07, 0.2, 8);
+const leafGeo = new THREE.ConeGeometry(0.38, 0.47, 8);
 const leafMat = new THREE.MeshStandardMaterial({ color: 0x00aa00 });
 const leaf = new THREE.Mesh(leafGeo, leafMat);
 leaf.position.y = 0.25;
@@ -534,10 +547,10 @@ eye2.scale.y = blink < 0.1 ? 0.1 : 1;
 
 // ellipse around FIRST LETTER "E"
 const a = 0.6;   // tighter → first E
-const b = 0.4;
+const b = 0.8;
 
 // shift LEFT so it orbits FIRST "E"
-const offsetX = -1.8;
+const offsetX = -3.1;
 
 apple.position.x = offsetX + a * Math.cos(t);
 apple.position.y = b * Math.sin(t);
@@ -549,7 +562,7 @@ scene.add(trail);
 trails.push(trail);
 
 // LIMIT TRAIL LENGTH
-if(trails.length > 20){
+if(trails.length >80){
 scene.remove(trails[0]);
 trails.shift();
 }
