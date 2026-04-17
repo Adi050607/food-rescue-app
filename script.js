@@ -104,7 +104,7 @@ getEl("status").innerText="🔍 Scanning...";
 
 try{
 
-const response = await fetch("/scan", {
+const response = await fetch("https://food-rescue-app-4jnl.onrender.com/scan", {
   method: "POST",
   headers: {
     "Content-Type": "application/json"

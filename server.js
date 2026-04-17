@@ -50,9 +50,18 @@ Return STRICT JSON ONLY:
 let result;
 
 try {
-  result = JSON.parse(text);
+  const jsonStart = text.indexOf("{");
+  const jsonEnd = text.lastIndexOf("}");
+
+  const cleanJson = text.slice(jsonStart, jsonEnd + 1);
+
+  result = JSON.parse(cleanJson);
+
 } catch (e) {
+  console.log("AI RAW RESPONSE:", text);
+
   return res.json({
+    valid: false,
     name: "Unknown",
     shelfLife: 1
   });
@@ -60,6 +69,7 @@ try {
 
 // Ensure fields exist
 res.json({
+  valid: result.valid ?? true,
   name: result.name || "Unknown",
   shelfLife: result.shelfLife || 1
 });
