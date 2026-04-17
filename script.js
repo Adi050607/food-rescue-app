@@ -393,10 +393,7 @@ getEl("deliveryResult").innerText =
 "✅ Assigned to:\n" + ngo +
 "\n\n🚚 Delivery: " + agent;
 }
-function toggleChat(){
-let box = document.getElementById("chatBox");
-box.style.display = box.style.display === "none" ? "block" : "none";
-}
+
 
 async function sendMessage(){
 
@@ -422,4 +419,100 @@ let data = await res.json();
 chat.innerHTML += `<p><b>AI:</b> ${data.reply}</p>`;
 
 chat.scrollTop = chat.scrollHeight;
+}
+function init3D(){
+
+const container = document.getElementById("threeContainer");
+
+// scene
+const scene = new THREE.Scene();
+
+// camera
+const camera = new THREE.PerspectiveCamera(75, container.clientWidth / 180, 0.1, 1000);
+camera.position.z = 5;
+
+// renderer
+const renderer = new THREE.WebGLRenderer({ alpha:true });
+renderer.setSize(container.clientWidth, 180);
+container.appendChild(renderer.domElement);
+
+// light
+const light = new THREE.PointLight(0xffffff, 1);
+light.position.set(10,10,10);
+scene.add(light);
+
+// FONT LOADER
+const loader = new THREE.FontLoader();
+
+loader.load("https://threejs.org/examples/fonts/helvetiker_regular.typeface.json", function(font){
+
+// TEXT
+const geometry = new THREE.TextGeometry("ECOEATS AI", {
+font: font,
+size: 0.6,
+height: 0.15
+});
+
+const material = new THREE.MeshStandardMaterial({ color: 0x2e7d32 });
+const textMesh = new THREE.Mesh(geometry, material);
+
+// center text
+geometry.computeBoundingBox();
+const xMid = -0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x);
+textMesh.position.x = xMid;
+
+scene.add(textMesh);
+
+// APPLE (SPHERE)
+const appleGeo = new THREE.SphereGeometry(0.2, 32, 32);
+const appleMat = new THREE.MeshStandardMaterial({ color: 0xff3333 });
+const apple = new THREE.Mesh(appleGeo, appleMat);
+
+scene.add(apple);
+
+// LEAF
+const leafGeo = new THREE.ConeGeometry(0.07, 0.2, 8);
+const leafMat = new THREE.MeshStandardMaterial({ color: 0x00aa00 });
+const leaf = new THREE.Mesh(leafGeo, leafMat);
+leaf.position.y = 0.25;
+apple.add(leaf);
+
+// ANIMATION (ELLIPTICAL)
+let t = 0;
+
+function animate(){
+requestAnimationFrame(animate);
+
+// elliptical motion
+t += 0.02;
+
+// ellipse around FIRST LETTER "E"
+const a = 1.2; // horizontal radius
+const b = 0.5; // vertical radius
+
+apple.position.x = a * Math.cos(t);
+apple.position.y = b * Math.sin(t);
+
+// slight rotation
+apple.rotation.y += 0.05;
+
+renderer.render(scene, camera);
+}
+
+animate();
+
+});
+
+}
+
+// INIT WHEN CHAT OPENS
+function toggleChat(){
+let box = document.getElementById("chatBox");
+
+if(box.style.display === "none"){
+box.style.display = "block";
+setTimeout(init3D, 200);
+}else{
+box.style.display = "none";
+}
 }
