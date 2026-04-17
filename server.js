@@ -22,8 +22,8 @@ app.post("/scan", async (req, res) => {
           role: "user",
           content: [
             {
-  type: "text",
-  text: `
+              type: "text",
+              text: `
 Analyze the image carefully.
 
 - Detect ONLY edible food items present anywhere in the image.
@@ -38,8 +38,11 @@ Return STRICT JSON ONLY:
   "shelfLife": number_of_days
 }
 `
-}
-            { type: "image_url", image_url: { url: image } }
+            },
+            {
+              type: "image_url",
+              image_url: { url: image }
+            }
           ]
         }
       ]
@@ -47,34 +50,34 @@ Return STRICT JSON ONLY:
 
     const text = response.choices[0].message.content;
 
-let result;
+    let result;
 
-try {
-  const jsonStart = text.indexOf("{");
-  const jsonEnd = text.lastIndexOf("}");
+    try {
+      const jsonStart = text.indexOf("{");
+      const jsonEnd = text.lastIndexOf("}");
 
-  const cleanJson = text.slice(jsonStart, jsonEnd + 1);
+      const cleanJson = text.slice(jsonStart, jsonEnd + 1);
 
-  result = JSON.parse(cleanJson);
+      result = JSON.parse(cleanJson);
 
-} catch (e) {
-  console.log("AI RAW RESPONSE:", text);
+    } catch (e) {
+      console.log("AI RAW RESPONSE:", text);
 
-  return res.json({
-    valid: false,
-    name: "Unknown",
-    shelfLife: 1
-  });
-}
+      return res.json({
+        valid: false,
+        name: "Unknown",
+        shelfLife: 1
+      });
+    }
 
-// Ensure fields exist
-res.json({
-  valid: result.valid ?? true,
-  name: result.name || "Unknown",
-  shelfLife: result.shelfLife || 1
-});
+    res.json({
+      valid: result.valid ?? true,
+      name: result.name || "Unknown",
+      shelfLife: result.shelfLife || 1
+    });
 
   } catch (e) {
+    console.log("SERVER ERROR:", e);
     res.json({ valid: false });
   }
 });
