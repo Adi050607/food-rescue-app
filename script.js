@@ -404,11 +404,12 @@ if(!msg) return;
 
 let chat = getEl("chatMessages");
 
-chat.innerHTML += `<p><b>You:</b> ${msg}</p>`;
+let p1 = document.createElement("p");
+p1.innerHTML = "<b>You:</b> " + msg;
+chat.appendChild(p1);
 
 input.value = "";
-
-let res = await fetch("https://food-rescue-app-4jnl.onrender.com/chat",{
+let res = await fetch("/chat",{
 method:"POST",
 headers:{"Content-Type":"application/json"},
 body:JSON.stringify({message:msg})
@@ -416,7 +417,9 @@ body:JSON.stringify({message:msg})
 
 let data = await res.json();
 
-chat.innerHTML += `<p><b>AI:</b> ${data.reply}</p>`;
+let p2 = document.createElement("p");
+p2.innerHTML = "<b>AI:</b> " + data.reply;
+chat.appendChild(p2);
 
 chat.scrollTop = chat.scrollHeight;
 }
@@ -464,8 +467,12 @@ textMesh.position.x = xMid;
 scene.add(textMesh);
 
 // APPLE (SPHERE)
-const appleGeo = new THREE.SphereGeometry(0.2, 32, 32);
-const appleMat = new THREE.MeshStandardMaterial({ color: 0xff3333 });
+const appleGeo = new THREE.SphereGeometry(0.3, 32, 32);
+const appleMat = new THREE.MeshStandardMaterial({
+color: 0xff3333,
+emissive: 0x2196f3,
+emissiveIntensity: 0.6
+});
 const apple = new THREE.Mesh(appleGeo, appleMat);
 
 scene.add(apple);
@@ -487,10 +494,13 @@ requestAnimationFrame(animate);
 t += 0.02;
 
 // ellipse around FIRST LETTER "E"
-const a = 1.2; // horizontal radius
-const b = 0.5; // vertical radius
+const a = 0.6;   // tighter → first E
+const b = 0.4;
 
-apple.position.x = a * Math.cos(t);
+// shift LEFT so it orbits FIRST "E"
+const offsetX = -1.2;
+
+apple.position.x = offsetX + a * Math.cos(t);
 apple.position.y = b * Math.sin(t);
 
 // slight rotation
@@ -511,7 +521,10 @@ let box = document.getElementById("chatBox");
 
 if(box.style.display === "none"){
 box.style.display = "block";
+if(!window.sceneLoaded){
 setTimeout(init3D, 200);
+window.sceneLoaded = true;
+}
 }else{
 box.style.display = "none";
 }
